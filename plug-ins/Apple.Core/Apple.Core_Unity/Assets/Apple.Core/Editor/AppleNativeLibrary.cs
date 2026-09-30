@@ -1,4 +1,3 @@
-#if (UNITY_EDITOR_OSX && (UNITY_IOS || UNITY_TVOS || UNITY_STANDALONE_OSX || UNITY_VISIONOS))
 using System;
 using System.IO;
 using UnityEngine;
@@ -119,4 +118,3 @@ namespace Apple.Core
         public bool IsValid => ((FileName != string.Empty) && (Platform != string.Empty) && (Path != string.Empty)) && (Directory.Exists(FullPath) || File.Exists(FullPath));
     }
 }
-#endif // (UNITY_EDITOR_OSX && (UNITY_IOS || UNITY_TVOS || UNITY_STANDALONE_OSX || UNITY_VISIONOS))

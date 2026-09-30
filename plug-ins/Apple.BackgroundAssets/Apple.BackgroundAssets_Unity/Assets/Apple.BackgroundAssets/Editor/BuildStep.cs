@@ -124,7 +124,7 @@ struct BackgroundDownloadHandler: ManagedDownloaderExtension { }
 ";
 					}
 					File.WriteAllText(fullBackgroundDownloadHandlerPath, backgroundDownloadHandlerCode);
-					string backgroundDownloadHandlerGuid = pbxProject.AddFile(fullBackgroundDownloadHandlerPath, "BackgroundDownloadHandler.swift");
+					string backgroundDownloadHandlerGuid = pbxProject.AddFile("Downloader/BackgroundDownloadHandler.swift", "Downloader/BackgroundDownloadHandler.swift");
 					pbxProject.AddFileToBuild(downloaderTargetGuid, backgroundDownloadHandlerGuid);
 					string embedExtensionKitExtensionsBuildPhaseGuid = pbxProject.AddCopyFilesBuildPhase(mainTargetGuid, "Embed ExtensionKit Extensions", "$(EXTENSIONS_FOLDER_PATH)", "16");
 					string downloaderProductGuid = pbxProject.FindFileGuidByProjectPath("Products/Downloader.appex");

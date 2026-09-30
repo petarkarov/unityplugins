@@ -1,9 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-#if (UNITY_EDITOR_OSX && (UNITY_IOS || UNITY_TVOS || UNITY_STANDALONE_OSX || UNITY_VISIONOS))
 using UnityEditor.iOS.Xcode;
-#endif
 
 namespace Apple.Core
 {
@@ -21,7 +19,6 @@ namespace Apple.Core
             IsEnabled = false;
         }
 
-#if (UNITY_EDITOR_OSX && (UNITY_IOS || UNITY_TVOS || UNITY_STANDALONE_OSX || UNITY_VISIONOS))
         public override void OnProcessEntitlements(AppleBuildProfile appleBuildProfile, BuildTarget buildTarget, string pathToBuiltTarget, PlistDocument entitlements)
         {
             if (buildTarget == BuildTarget.tvOS)
@@ -39,6 +36,5 @@ namespace Apple.Core
                 }
             }
         }
-#endif
     }
 }
