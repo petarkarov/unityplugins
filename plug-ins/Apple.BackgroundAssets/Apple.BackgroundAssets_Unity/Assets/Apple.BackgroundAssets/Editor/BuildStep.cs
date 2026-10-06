@@ -27,6 +27,20 @@ namespace Apple.BackgroundAssets {
 			
 			const string AppSandboxKey = "com.apple.security.app-sandbox";
 			
+			// Managed asset packs require at least iOS 26, but the Downloader extension target would otherwise
+			// inherit the app's own minimum iOS version. An extension is a separate binary, so it's fine for it
+			// to require a newer OS than the app: iOS simply won't load it on older devices, and the app keeps
+			// its own lower minimum for the CDN fallback path.
+			const string MinimumDownloaderIOSVersion = "26.0";
+			
+			static string DownloaderIOSDeploymentTarget(string appDeploymentTarget) {
+				System.Version appVersion;
+				if (System.Version.TryParse(appDeploymentTarget, out appVersion) && appVersion >= new System.Version(MinimumDownloaderIOSVersion)) {
+					return appDeploymentTarget;
+				}
+				return MinimumDownloaderIOSVersion;
+			}
+			
 			public void OnEnable() {
 				if (Application.identifier != null) {
 					this.DownloaderExtensionBundleId = Application.identifier + ".downloader";
@@ -90,7 +104,7 @@ namespace Apple.BackgroundAssets {
 					pbxProject.AddBuildProperty(downloaderTargetGuid, "SWIFT_VERSION", "6.0");
 					switch (buildTarget) {
 					case BuildTarget.iOS:
-						pbxProject.AddBuildProperty(downloaderTargetGuid, "IPHONEOS_DEPLOYMENT_TARGET", PlayerSettings.iOS.targetOSVersionString);
+						pbxProject.AddBuildProperty(downloaderTargetGuid, "IPHONEOS_DEPLOYMENT_TARGET", DownloaderIOSDeploymentTarget(PlayerSettings.iOS.targetOSVersionString));
 						break;
 					case BuildTarget.StandaloneOSX:
 						pbxProject.AddBuildProperty(downloaderTargetGuid, "MACOSX_DEPLOYMENT_TARGET", PlayerSettings.macOS.targetOSVersion);
@@ -144,7 +158,7 @@ struct BackgroundDownloadHandler: ManagedDownloaderExtension { }
 					pbxProject.SetBuildProperty(downloaderTargetGuid, "PRODUCT_BUNDLE_IDENTIFIER", this.DownloaderExtensionBundleId);
 					switch (buildTarget) {
 					case BuildTarget.iOS:
-						pbxProject.SetBuildProperty(downloaderTargetGuid, "IPHONEOS_DEPLOYMENT_TARGET", PlayerSettings.iOS.targetOSVersionString);
+						pbxProject.SetBuildProperty(downloaderTargetGuid, "IPHONEOS_DEPLOYMENT_TARGET", DownloaderIOSDeploymentTarget(PlayerSettings.iOS.targetOSVersionString));
 						break;
 					case BuildTarget.StandaloneOSX:
 						pbxProject.SetBuildProperty(downloaderTargetGuid, "MACOSX_DEPLOYMENT_TARGET", PlayerSettings.macOS.targetOSVersion);
